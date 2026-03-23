@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jolismurs — Lieux insolites à Paris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --peach: #F2C4A8;
+  --peach-light: #FAE8DC;
+  --peach-pale: #FDF4EE;
+  --salmon: #D4896A;
+  --salmon-dark: #B5633E;
+  --charcoal: #3D3535;
+  --gray: #7A7070;
+  --gray-light: #C8BFBC;
+  --white: #FFFAF7;
+  --gold: #C49A5E;
+  --green: #6B9E78;
+  --radius: 18px;
+  --shadow: 0 8px 40px rgba(61,53,53,0.10);
+  --shadow-sm: 0 2px 12px rgba(61,53,53,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--charcoal);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--peach-light);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--charcoal);
+  letter-spacing: -0.02em;
+}
+.logo span { color: var(--salmon); }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+
+/* Burger */
+.burger-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 8px; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 5px;
+  transition: background 0.2s;
+}
+.burger-btn:hover { background: var(--peach-light); }
+.burger-btn span {
+  display: block; width: 22px; height: 2px;
+  background: var(--charcoal); border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Profile */
+.profile-wrap { position: relative; }
+.profile-btn {
+  background: var(--peach-light); border: none; cursor: pointer;
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; transition: background 0.2s;
+}
+.profile-btn:hover { background: var(--peach); }
+.profile-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); width: 200px;
+  padding: 8px; display: none; z-index: 200;
+  border: 1px solid var(--peach-light);
+  animation: slideDown 0.2s ease;
+}
+.profile-dropdown.open { display: block; }
+.profile-dropdown a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  color: var(--charcoal); text-decoration: none;
+  font-size: 0.875rem; font-weight: 500;
+  transition: background 0.15s;
+}
+.profile-dropdown a:hover { background: var(--peach-light); }
+.profile-dropdown .divider { height: 1px; background: var(--peach-light); margin: 6px 0; }
+
+/* Nav tabs */
+.nav-tabs {
+  display: flex; gap: 0.5rem;
+}
+.nav-tab {
+  background: none; border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--gray); transition: all 0.2s;
+}
+.nav-tab:hover, .nav-tab.active {
+  background: var(--peach-light); color: var(--charcoal);
+}
+.nav-tab.active { color: var(--salmon-dark); }
+
+/* Favorites badge */
+.fav-count {
+  background: var(--salmon); color: white;
+  font-size: 0.65rem; font-weight: 700;
+  border-radius: 50%; width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 4px; display: none;
+}
+.fav-count.visible { display: inline-flex; }
+
+/* ===== BURGER MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(61,53,53,0.4); backdrop-filter: blur(4px);
+  display: none; align-items: flex-start; justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+.modal-overlay.open { display: flex; }
+.menu-modal {
+  background: var(--white); width: 320px; height: 100vh;
+  padding: 2rem; overflow-y: auto;
+  animation: slideFromRight 0.3s ease;
+  display: flex; flex-direction: column; gap: 2rem;
+}
+.menu-modal .close-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.4rem; color: var(--gray); align-self: flex-end;
+  padding: 4px; border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.menu-modal .close-btn:hover { background: var(--peach-light); color: var(--charcoal); }
+.menu-nav { display: flex; flex-direction: column; gap: 4px; }
+.menu-nav a {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--charcoal); text-decoration: none;
+  padding: 10px 16px; border-radius: 12px;
+  transition: all 0.2s; letter-spacing: -0.02em;
+}
+.menu-nav a:hover { background: var(--peach-light); color: var(--salmon); }
+.menu-footer { margin-top: auto; font-size: 0.75rem; color: var(--gray-light); }
+
+/* ===== MAIN CONTENT ===== */
+main { padding: 1.5rem 2rem 3rem; max-width: 1400px; margin: 0 auto; }
+
+/* Page sections */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ===== CONTROLS BAR ===== */
+.controls-bar {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.controls-left { display: flex; align-items: center; gap: 0.75rem; flex: 1; flex-wrap: wrap; }
+.controls-right { display: flex; align-items: center; gap: 0.75rem; }
+
+/* Filtre toggle */
+.filter-toggle {
+  background: var(--peach-light); border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; font-weight: 500; color: var(--charcoal);
+  display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+}
+.filter-toggle:hover { background: var(--peach); }
+.filter-toggle svg { transition: transform 0.2s; }
+.filter-toggle.open svg { transform: rotate(180deg); }
+
+/* Filter pills */
+.filter-bar {
+  display: none; align-items: center; gap: 0.5rem;
+  flex-wrap: wrap; padding: 0.5rem 0;
+  animation: slideDown 0.2s ease;
+}
+.filter-bar.open { display: flex; }
+.filter-pill {
+  background: var(--white); border: 2px solid var(--peach-light);
+  cursor: pointer; padding: 6px 14px; border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; font-weight: 500; color: var(--gray);
+  transition: all 0.2s;
+}
+.filter-pill:hover { border-color: var(--peach); color: var(--charcoal); }
+.filter-pill.active {
+  background: var(--salmon); border-color: var(--salmon);
+  color: white;
+}
+
+/* Sort select */
+.sort-select {
+  background: var(--white); border: 2px solid var(--peach-light);
+  padding: 8px 14px; border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem; color: var(--charcoal); cursor: pointer;
+  outline: none; appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7070' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s;
+}
+.sort-select:focus { border-color: var(--salmon); }
+
+/* View toggle */
+.view-toggle {
+  display: flex; background: var(--peach-light); border-radius: 20px; padding: 3px;
+}
+.view-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 6px 12px; border-radius: 16px;
+  font-size: 0.75rem; font-weight: 500; color: var(--gray);
+  transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+}
+.view-btn.active { background: var(--white); color: var(--charcoal); box-shadow: var(--shadow-sm); }
+
+/* Results count */
+.results-count { font-size: 0.8rem; color: var(--gray); font-weight: 400; }
+
+/* ===== MAP SECTION ===== */
+.map-container {
+  background: var(--peach-pale); border-radius: 24px;
+  padding: 1.5rem; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+  border: 1px solid var(--peach-light);
+}
+.map-container h2 {
+  font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 1rem; color: var(--charcoal);
+}
+
+#paris-map {
+  width: 100%; max-height: 420px; display: block; cursor: default;
+}
+
+.map-point {
+  cursor: pointer; transition: transform 0.2s;
+}
+.map-point circle {
+  fill: var(--salmon); stroke: white; stroke-width: 2.5;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  transition: r 0.2s, fill 0.2s;
+}
+.map-point:hover circle { fill: var(--salmon-dark); r: 9; }
+.map-point.visited circle { fill: var(--gray-light); }
+.map-point.faved circle { fill: var(--gold); }
+
+/* ===== POPUP ===== */
+.popup-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(61,53,53,0.35); backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease; padding: 1rem;
+}
+.popup-overlay.open { display: flex; }
+.popup-card {
+  background: var(--white); border-radius: 24px;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(61,53,53,0.2);
+  overflow: hidden; animation: popUp 0.25s ease;
+}
+.popup-category {
+  display: inline-block; background: var(--peach-light);
+  color: var(--salmon-dark); font-size: 0.7rem; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+  letter-spacing: 0.05em; margin: 1.25rem 1.25rem 0;
+}
+.popup-close {
+  float: right; background: none; border: none; cursor: pointer;
+  font-size: 1.2rem; color: var(--gray); margin: 1rem 1rem 0 0;
+  padding: 4px 8px; border-radius: 6px; transition: background 0.2s;
+}
+.popup-close:hover { background: var(--peach-light); }
+.popup-title {
+  font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700;
+  margin: 0.5rem 1.25rem 0.25rem; letter-spacing: -0.02em;
+}
+.popup-divider { width: 36px; height: 3px; background: var(--salmon); margin: 0 1.25rem 1rem; border-radius: 2px; }
+.popup-info { padding: 0 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.popup-row { display: flex; align-items: flex-start; gap: 10px; font-size: 0.875rem; color: var(--charcoal); }
+.popup-row svg { flex-shrink: 0; margin-top: 2px; }
+.popup-metro { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
+.metro-badge {
+  background: var(--charcoal); color: white;
+  font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+}
+.popup-img { width: 100%; height: 140px; object-fit: cover; margin-top: 1rem; background: var(--peach-light); display: flex; align-items: center; justify-content: center; }
+.popup-img svg { opacity: 0.3; }
+.popup-actions {
+  display: flex; align-items: center; justify-content: center; gap: 2rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--peach-light);
+}
+.popup-action-btn {
+  background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-size: 0.72rem; font-weight: 500; color: var(--gray);
+  transition: color 0.2s;
+}
+.popup-action-btn svg { transition: transform 0.2s; }
+.popup-action-btn:hover { color: var(--salmon); }
+.popup-action-btn:hover svg { transform: scale(1.15); }
+.popup-action-btn.active { color: var(--salmon); }
+.popup-itinerary {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; color: var(--salmon); text-decoration: none;
+  font-weight: 500; padding: 0 1.25rem 1rem;
+  transition: opacity 0.2s;
+}
+.popup-itinerary:hover { opacity: 0.75; }
+
+/* ===== CARDS GRID ===== */
+.cards-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+.cards-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.place-card {
+  background: var(--white); border-radius: var(--radius);
+  border: 1px solid var(--peach-light);
+  overflow: hidden; transition: all 0.25s;
+  box-shadow: var(--shadow-sm);
+}
+.place-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.place-card.visited { opacity: 0.5; }
+
+/* Card image placeholder */
+.card-img {
+  height: 160px; background: var(--peach-light);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.card-img-emoji { font-size: 3rem; }
+.card-category-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(255,255,255,0.9); color: var(--salmon-dark);
+  font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.card-body { padding: 1rem; }
+.card-title {
+  font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700;
+  margin-bottom: 0.6rem; letter-spacing: -0.02em; color: var(--charcoal);
+}
+.card-info { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.8rem; }
+.card-info-row {
+  display: flex; align-items: flex-start; gap: 7px;
+  font-size: 0.8rem; color: var(--gray);
+}
+.card-info-row a { color: var(--salmon); text-decoration: none; }
+.card-info-row a:hover { text-decoration: underline; }
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 1rem; border-top: 1px solid var(--peach-light);
+}
+.card-action {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.78rem; font-weight: 500; color: var(--gray);
+  padding: 4px 8px; border-radius: 8px;
+  transition: all 0.2s;
+}
+.card-action:hover { background: var(--peach-light); color: var(--salmon); }
+.card-action.active { color: var(--salmon); }
+.card-itinerary {
+  font-size: 0.78rem; color: var(--salmon); text-decoration: none;
+  font-weight: 500; display: flex; align-items: center; gap: 4px;
+}
+
+/* === LIST VIEW === */
+.list-card {
+  background: var(--white); border-radius: var(--radius);
+  border: 1px solid var(--peach-light);
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1.25rem;
+  transition: all 0.25s; box-shadow: var(--shadow-sm);
+}
+.list-card:hover { box-shadow: var(--shadow); transform: translateX(2px); }
+.list-card.visited { opacity: 0.5; }
+.list-card-emoji {
+  width: 60px; height: 60px; background: var(--peach-light); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.list-card-body { flex: 1; min-width: 0; }
+.list-card-title {
+  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700;
+  margin-bottom: 0.3rem; letter-spacing: -0.02em;
+}
+.list-card-meta {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  font-size: 0.8rem; color: var(--gray);
+}
+.list-card-meta span { display: flex; align-items: center; gap: 5px; }
+.list-card-actions { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.list-action {
+  background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.68rem; color: var(--gray); padding: 6px;
+  border-radius: 8px; transition: all 0.2s;
+}
+.list-action:hover { background: var(--peach-light); color: var(--salmon); }
+.list-action.active { color: var(--salmon); }
+.list-category-tag {
+  font-size: 0.68rem; font-weight: 600; color: var(--salmon-dark);
+  background: var(--peach-light); padding: 2px 8px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+  display: inline-block;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem; margin-top: 2.5rem;
+}
+.page-btn {
+  background: var(--white); border: 2px solid var(--peach-light);
+  width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+  color: var(--charcoal); transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover { border-color: var(--salmon); color: var(--salmon); }
+.page-btn.active { background: var(--salmon); border-color: var(--salmon); color: white; font-weight: 600; }
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ===== FAVORITES PAGE ===== */
+.page-header {
+  margin-bottom: 2rem;
+}
+.page-header h1 {
+  font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900;
+  letter-spacing: -0.03em; color: var(--charcoal);
+}
+.page-header p { color: var(--gray); margin-top: 0.4rem; font-size: 0.9rem; }
+.empty-state {
+  text-align: center; padding: 4rem 2rem; color: var(--gray);
+}
+.empty-state .empty-emoji { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
+.empty-state h3 {
+  font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;
+}
+
+/* ===== ABOUT PAGE ===== */
+.about-hero {
+  background: linear-gradient(135deg, var(--peach-pale) 0%, var(--peach-light) 100%);
+  border-radius: 24px; padding: 3rem; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.about-hero::before {
+  content: ''; position: absolute;
+  width: 300px; height: 300px; background: var(--peach);
+  border-radius: 50%; top: -80px; right: -80px; opacity: 0.5;
+}
+.about-hero h1 {
+  font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 900;
+  letter-spacing: -0.03em; position: relative;
+}
+.about-hero h1 span { color: var(--salmon); }
+.about-hero p { max-width: 520px; margin-top: 1rem; line-height: 1.7; color: var(--charcoal); position: relative; }
+.about-features {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.25rem;
+}
+.about-feature {
+  background: var(--white); border: 1px solid var(--peach-light);
+  border-radius: var(--radius); padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.about-feature .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.about-feature h3 {
+  font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.about-feature p { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+
+/* ===== CONTRIBUTION PAGE ===== */
+.contrib-form {
+  background: var(--white); border: 1px solid var(--peach-light);
+  border-radius: 24px; padding: 2rem; max-width: 620px;
+  box-shadow: var(--shadow-sm);
+}
+.form-group { margin-bottom: 1.25rem; }
+.form-group label {
+  display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;
+  color: var(--charcoal);
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--peach-light);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+  color: var(--charcoal); background: var(--white); outline: none; transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--salmon);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.submit-btn {
+  background: var(--salmon); color: white; border: none; cursor: pointer;
+  padding: 12px 28px; border-radius: 12px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 600; transition: background 0.2s;
+}
+.submit-btn:hover { background: var(--salmon-dark); }
+.success-msg {
+  background: #E8F5E9; border: 1px solid #A5D6A7; color: #2E7D32;
+  padding: 12px 16px; border-radius: 10px; font-size: 0.875rem;
+  margin-top: 1rem; display: none;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideFromRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes popUp { from { opacity: 0; transform: scale(0.94) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  header { padding: 0 1rem; }
+  main { padding: 1rem 1rem 3rem; }
+  .nav-tabs { display: none; }
+  .about-hero { padding: 2rem 1.5rem; }
+  .about-hero h1 { font-size: 1.8rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .list-card-meta { gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo">Jolis<span>murs</span></div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('map')">🗺 Carte</button>
+    <button class="nav-tab" onclick="showPage('favorites')">♥ Favoris <span class="fav-count" id="fav-badge">0</span></button>
+    <button class="nav-tab" onclick="showPage('contribution')">✦ Contribuer</button>
+    <button class="nav-tab" onclick="showPage('about')">À propos</button>
+  </nav>
+  <div class="header-right">
+    <div class="profile-wrap">
+      <button class="profile-btn" onclick="toggleProfile()" title="Mon profil">👤</button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="#">👤 Mon profil</a>
+        <a href="#" onclick="showPage('favorites'); closeProfile()">♥ Mes favoris</a>
+        <a href="#" onclick="showPage('map'); closeProfile()">✓ Déjà vus</a>
+        <div class="divider"></div>
+        <a href="#">🔒 Connexion</a>
+        <a href="#">📝 Inscription</a>
+        <div class="divider"></div>
+        <a href="#">⚖️ Mentions légales</a>
+      </div>
+    </div>
+    <button class="burger-btn" onclick="openBurger()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== BURGER MODAL ===== -->
+<div class="modal-overlay" id="burgerModal" onclick="closeBurgerOutside(event)">
+  <div class="menu-modal">
+    <button class="close-btn" onclick="closeBurger()">✕</button>
+    <nav class="menu-nav">
+      <a href="#" onclick="showPage('map'); closeBurger()">🗺 La carte</a>
+      <a href="#" onclick="showPage('favorites'); closeBurger()">♥ Favoris</a>
+      <a href="#" onclick="showPage('contribution'); closeBurger()">✦ Contribuer</a>
+      <a href="#" onclick="showPage('about'); closeBurger()">À propos</a>
+      <a href="#">📞 Contact</a>
+      <a href="#">⚖️ Accessibilité</a>
+    </nav>
+    <div class="menu-footer">
+      <p>Jolismurs — Lieux insolites à Paris</p>
+      <p style="margin-top:4px">© 2025 Jolismurs</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== POPUP ===== -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopupOutside(event)">
+  <div class="popup-card" id="popupCard">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between">
+      <span class="popup-category" id="popupCategory">Musée</span>
+      <button class="popup-close" onclick="closePopup()">✕</button>
+    </div>
+    <div class="popup-title" id="popupTitle">Le Louvre</div>
+    <div class="popup-divider"></div>
+    <div class="popup-info" id="popupInfo"></div>
+    <div class="popup-img" id="popupImg">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zm-7-2l-2.5-3-1.5 2-2-2.5L5 17h14z"/></svg>
+    </div>
+    <a class="popup-itinerary" id="popupItinerary" href="#" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      Ouvrir l'itinéraire
+    </a>
+    <div class="popup-actions" id="popupActions"></div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+  <!-- MAP PAGE -->
+  <div class="page-section active" id="page-map">
+
+    <!-- Controls -->
+    <div class="controls-bar">
+      <div class="controls-left">
+        <button class="filter-toggle" id="filterToggle" onclick="toggleFilters()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          Filtrer par
+          <svg width="12" height="12" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l5 5 5-5"/></svg>
+        </button>
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-pill active" data-cat="all" onclick="setFilter(this,'all')">Tout</button>
+          <button class="filter-pill" data-cat="musee" onclick="setFilter(this,'musee')">🏛 Musées</button>
+          <button class="filter-pill" data-cat="parc" onclick="setFilter(this,'parc')">🌿 Parcs & jardins</button>
+          <button class="filter-pill" data-cat="insolite" onclick="setFilter(this,'insolite')">✨ Lieux insolites</button>
+          <button class="filter-pill" data-cat="monument" onclick="setFilter(this,'monument')">🏰 Monuments</button>
+        </div>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+      <div class="controls-right">
+        <select class="sort-select" onchange="sortPlaces(this.value)">
+          <option value="name">Trier par nom</option>
+          <option value="cat">Trier par catégorie</option>
+          <option value="price">Trier par prix</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" id="btnGrid" onclick="setView('grid')">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg> Blocs
+          </button>
+          <button class="view-btn" id="btnList" onclick="setView('list')">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg> Liste
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map SVG -->
+    <div class="map-container">
+      <svg id="paris-map" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+        <!-- Fond Paris blob -->
+        <ellipse cx="400" cy="210" rx="340" ry="175" fill="#EDD5BF" opacity="0.6"/>
+        <!-- Contour Paris approximatif -->
+        <path d="M130,210 C130,140 180,80 260,65 C320,52 370,58 420,55 C500,50 560,70 610,110 C660,150 680,185 670,230 C660,275 630,310 590,335 C540,365 480,375 420,378 C360,381 290,370 240,345 C185,318 145,275 130,210 Z" fill="#F5DDD0" stroke="#D4896A" stroke-width="2" opacity="0.8"/>
+        <!-- Seine River -->
+        <path d="M100,240 C150,230 200,225 250,230 C300,235 330,250 370,248 C420,246 460,230 510,225 C560,220 620,235 690,260" stroke="#8EC3D8" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.7"/>
+        <!-- Routes principales -->
+        <line x1="200" y1="100" x2="580" y2="100" stroke="white" stroke-width="3" opacity="0.5"/>
+        <line x1="200" y1="100" x2="200" y2="360" stroke="white" stroke-width="3" opacity="0.5"/>
+        <line x1="400" y1="70" x2="400" y2="380" stroke="white" stroke-width="3" opacity="0.5"/>
+        <line x1="580" y1="100" x2="580" y2="350" stroke="white" stroke-width="3" opacity="0.5"/>
+        <line x1="150" y1="200" x2="680" y2="200" stroke="white" stroke-width="3" opacity="0.5"/>
+
+        <!-- Label Seine -->
+        <text x="480" y="218" font-family="DM Sans, sans-serif" font-size="11" fill="#5B9AB5" opacity="0.8">La Seine</text>
+
+        <!-- Points d'intérêt (seront rendus par JS) -->
+        <g id="mapPoints"></g>
+      </svg>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-grid" id="cardsContainer"></div>
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <!-- FAVORITES PAGE -->
+  <div class="page-section" id="page-favorites">
+    <div class="page-header">
+      <h1>♥ Mes Favoris</h1>
+      <p>Les lieux que vous souhaitez visiter</p>
+    </div>
+    <div id="favoritesContainer"></div>
+  </div>
+
+  <!-- CONTRIBUTION PAGE -->
+  <div class="page-section" id="page-contribution">
+    <div class="page-header">
+      <h1>✦ Contribuer</h1>
+      <p>Proposez un lieu insolite que vous connaissez</p>
+    </div>
+    <div class="contrib-form">
+      <div class="form-group">
+        <label>Nom du lieu *</label>
+        <input type="text" placeholder="Ex: La Pagode de Paris">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Catégorie *</label>
+          <select>
+            <option value="">Choisir...</option>
+            <option>Musée</option>
+            <option>Parc & jardins</option>
+            <option>Lieu insolite</option>
+            <option>Monument historique</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Arrondissement</label>
+          <input type="text" placeholder="Ex: 7ème">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Adresse *</label>
+        <input type="text" placeholder="Ex: 57 rue de Babylone, 75007 Paris">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Latitude</label>
+          <input type="text" placeholder="Ex: 48.8566">
+        </div>
+        <div class="form-group">
+          <label>Longitude</label>
+          <input type="text" placeholder="Ex: 2.3522">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Horaires</label>
+        <input type="text" placeholder="Ex: Lun-Sam 10h-18h, fermé dim">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prix</label>
+          <input type="text" placeholder="Ex: 5€ / Gratuit">
+        </div>
+        <div class="form-group">
+          <label>Site internet</label>
+          <input type="url" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description / Anecdote</label>
+        <textarea placeholder="Décrivez ce lieu en quelques phrases..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Métro le plus proche</label>
+        <input type="text" placeholder="Ex: Saint-François-Xavier (ligne 13)">
+      </div>
+      <button class="submit-btn" onclick="submitContrib()">Envoyer ma proposition →</button>
+      <div class="success-msg" id="successMsg">
+        ✓ Merci pour votre contribution ! Elle sera examinée par un modérateur avant publication.
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div class="page-section" id="page-about">
+    <div class="about-hero">
+      <h1>Paris autrement<br><span>avec Jolismurs</span></h1>
+      <p>Une carte interactive pour découvrir les lieux insolites, méconnus et magnifiques de Paris — musées cachés, jardins secrets, monuments oubliés.</p>
+    </div>
+    <div class="about-features">
+      <div class="about-feature">
+        <div class="icon">🗺</div>
+        <h3>Carte interactive</h3>
+        <p>Naviguez sur une carte de Paris avec des filtres par catégorie pour personnaliser votre exploration.</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">📍</div>
+        <h3>Informations pratiques</h3>
+        <p>Horaires, tarifs, transports, site officiel — tout en un clic pour préparer facilement votre visite.</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">♥</div>
+        <h3>Sauvegardez vos favoris</h3>
+        <p>Créez votre liste personnelle de lieux à visiter et retrouvez-les dans votre espace Favoris.</p>
+      </div>
+      <div class="about-feature">
+        <div class="icon">✦</div>
+        <h3>Communauté</h3>
+        <p>Contribuez en proposant des lieux que vous connaissez. Chaque suggestion est vérifiée par notre équipe.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ===== DATA =====
+const places = [
+  { id:1, name:"Le Louvre", cat:"musee", catLabel:"Musée", emoji:"🏛",
+    address:"99 rue de Rivoli, 75001 Paris", hours:"9h–18h, fermé le mardi",
+    price:"De 0€ à 17€ selon profil", website:"louvre.fr", metro:"Louvre Rivoli (L1)",
+    lat:210, lng:330, desc:"Le plus grand musée du monde, incontournable." },
+  { id:2, name:"Musée d'Orsay", cat:"musee", catLabel:"Musée", emoji:"🎨",
+    address:"1 rue de la Légion d'Honneur, 75007", hours:"9h30–18h, fermé lundi",
+    price:"De 0€ à 16€ selon profil", website:"musee-orsay.fr", metro:"Solférino (L12)",
+    lat:228, lng:290, desc:"Chef-d'œuvre de l'art impressionniste dans une ancienne gare." },
+  { id:3, name:"Parc Monceau", cat:"parc", catLabel:"Parcs & jardins", emoji:"🌿",
+    address:"35 boulevard de Courcelles, 75008", hours:"Ouvert tous les jours 7h–20h",
+    price:"Gratuit", website:"paris.fr", metro:"Monceau (L2)",
+    lat:138, lng:260, desc:"Un parc romantique avec colonnade antique et pyramide." },
+  { id:4, name:"Cimetière du Père Lachaise", cat:"insolite", catLabel:"Lieux insolites", emoji:"🌳",
+    address:"16 rue du Repos, 75020", hours:"8h–17h30 (lun-ven), 8h30 (sam-dim)",
+    price:"Gratuit", website:"pere-lachaise.com", metro:"Père Lachaise (L2/3)",
+    lat:200, lng:570, desc:"Nécropole romantique, sépulture de Chopin, Proust, Piaf..." },
+  { id:5, name:"Musée Quai Branly", cat:"musee", catLabel:"Musée", emoji:"🗿",
+    address:"37 quai Branly, 75007", hours:"10h30–19h, fermé lundi",
+    price:"De 0€ à 14€ selon profil", website:"quaibranly.fr", metro:"Bir-Hakeim (L6)",
+    lat:232, lng:228, desc:"Arts et civilisations d'Afrique, Asie, Océanie et Amériques." },
+  { id:6, name:"Sainte-Chapelle", cat:"monument", catLabel:"Monument", emoji:"⛪",
+    address:"8 boulevard du Palais, 75001", hours:"9h–17h tous les jours",
+    price:"De 0€ à 13€ selon profil", website:"sainte-chapelle.fr", metro:"Cité (L4)",
+    lat:235, lng:355, desc:"Joyau gothique avec 15 vitraux du XIIIe siècle." },
+  { id:7, name:"Promenade Plantée", cat:"parc", catLabel:"Parcs & jardins", emoji:"🌺",
+    address:"Viaduc des Arts, 75012", hours:"Ouvert tous les jours",
+    price:"Gratuit", website:"paris.fr", metro:"Bastille (L1/5/8)",
+    lat:248, lng:510, desc:"Coulée verte sur une ancienne voie ferrée, inspiratrice de la High Line." },
+  { id:8, name:"Tour Saint-Jacques", cat:"monument", catLabel:"Monument", emoji:"🏰",
+    address:"Square de la Tour Saint-Jacques, 75004", hours:"Sur réservation (été)",
+    price:"10€", website:"paris.fr", metro:"Châtelet (L1/4/7/11/14)",
+    lat:228, lng:373, desc:"Tour gothique flamboyant isolée, dernier vestige d'une ancienne église." },
+  { id:9, name:"Musée de la Chasse et de la Nature", cat:"musee", catLabel:"Musée", emoji:"🦌",
+    address:"62 rue des Archives, 75003", hours:"11h–18h, fermé lundi",
+    price:"De 0€ à 8€ selon profil", website:"chassenature.org", metro:"Rambuteau (L11)",
+    lat:212, lng:395, desc:"Musée insolite mêlant art ancien et contemporain autour de la chasse." },
+  { id:10, name:"Square des Batignolles", cat:"parc", catLabel:"Parcs & jardins", emoji:"🦆",
+    address:"Place Charles de Gaulle, 75017", hours:"Ouvert tous les jours",
+    price:"Gratuit", website:"paris.fr", metro:"Brochant (L13)",
+    lat:130, lng:228, desc:"Jardin à l'anglaise avec rivière artificielle et canards." },
+  { id:11, name:"Crypte Archéologique", cat:"insolite", catLabel:"Lieux insolites", emoji:"🏺",
+    address:"Parvis Notre-Dame, 75004", hours:"10h–18h, fermé lundi",
+    price:"De 0€ à 9€ selon profil", website:"paris.fr", metro:"Cité (L4)",
+    lat:242, lng:362, desc:"Vestiges gallo-romains sous le parvis de Notre-Dame." },
+  { id:12, name:"Marché d'Aligre", cat:"insolite", catLabel:"Lieux insolites", emoji:"🧺",
+    address:"Place d'Aligre, 75012", hours:"8h–13h, fermé lundi",
+    price:"Gratuit", website:"paris.fr", metro:"Ledru Rollin (L8)",
+    lat:258, lng:490, desc:"Le marché le plus populaire de Paris, ambiance unique." }
+];
+
+let currentFilter = 'all';
+let currentView = 'grid';
+let currentPage = 1;
+const PER_PAGE = 6;
+let favorites = new Set();
+let visited = new Set();
+let currentPopupId = null;
+
+// ===== RENDER MAP POINTS =====
+function renderMap() {
+  const g = document.getElementById('mapPoints');
+  g.innerHTML = '';
+  const filtered = getFiltered();
+  filtered.forEach(p => {
+    const grp = document.createElementNS('http://www.w3.org/2000/svg','g');
+    grp.setAttribute('class','map-point' + (visited.has(p.id) ? ' visited':'') + (favorites.has(p.id) ? ' faved':''));
+    grp.setAttribute('tabindex','0');
+    grp.setAttribute('aria-label', p.name);
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', p.lng);
+    c.setAttribute('cy', p.lat);
+    c.setAttribute('r','7');
+    const t = document.createElementNS('http://www.w3.org/2000/svg','title');
+    t.textContent = p.name;
+    grp.appendChild(c);
+    grp.appendChild(t);
+    grp.addEventListener('click', ()=>openPopup(p.id));
+    grp.addEventListener('mouseenter', ()=>highlightMapPoint(p.id, true));
+    grp.addEventListener('mouseleave', ()=>highlightMapPoint(p.id, false));
+    g.appendChild(grp);
+  });
+}
+
+function highlightMapPoint(id, on) {
+  document.querySelectorAll('.map-point circle').forEach(c => {
+    const grp = c.parentElement;
+    if(on) {
+      // find which group by position
+    }
+  });
+}
+
+// ===== FILTERS =====
+function toggleFilters() {
+  const bar = document.getElementById('filterBar');
+  const btn = document.getElementById('filterToggle');
+  bar.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function setFilter(el, cat) {
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = cat;
+  currentPage = 1;
+  renderAll();
+}
+function getFiltered() {
+  let list = currentFilter === 'all' ? [...places] : places.filter(p=>p.cat===currentFilter);
+  return list;
+}
+
+// ===== SORT =====
+function sortPlaces(val) {
+  if(val==='name') places.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(val==='cat') places.sort((a,b)=>a.cat.localeCompare(b.cat));
+  else if(val==='price') places.sort((a,b)=>a.price.localeCompare(b.price));
+  currentPage=1; renderAll();
+}
+
+// ===== VIEW =====
+function setView(v) {
+  currentView = v;
+  document.getElementById('btnGrid').classList.toggle('active', v==='grid');
+  document.getElementById('btnList').classList.toggle('active', v==='list');
+  renderCards();
+}
+
+// ===== PAGINATION =====
+function renderPagination(total) {
+  const pages = Math.ceil(total / PER_PAGE);
+  const pag = document.getElementById('pagination');
+  pag.innerHTML = '';
+  if(pages <= 1) return;
+  const prev = document.createElement('button');
+  prev.className='page-btn'; prev.textContent='←';
+  prev.disabled = currentPage===1;
+  prev.onclick = ()=>{ currentPage--; renderAll(); };
+  pag.appendChild(prev);
+  for(let i=1;i<=pages;i++){
+    const btn = document.createElement('button');
+    btn.className='page-btn'+(i===currentPage?' active':'');
+    btn.textContent=i;
+    btn.onclick=(()=>{const pg=i;return()=>{ currentPage=pg; renderAll(); }})();
+    pag.appendChild(btn);
+  }
+  const next = document.createElement('button');
+  next.className='page-btn'; next.textContent='→';
+  next.disabled = currentPage===pages;
+  next.onclick=()=>{ currentPage++; renderAll(); };
+  pag.appendChild(next);
+}
+
+// ===== RENDER CARDS =====
+function renderCards() {
+  const filtered = getFiltered();
+  const start = (currentPage-1)*PER_PAGE;
+  const pageItems = filtered.slice(start, start+PER_PAGE);
+  const container = document.getElementById('cardsContainer');
+  container.className = currentView==='grid' ? 'cards-grid' : 'cards-list';
+  container.innerHTML = '';
+  document.getElementById('resultsCount').textContent = filtered.length + ' lieu' + (filtered.length>1?'x':'');
+
+  if(pageItems.length===0){
+    container.innerHTML = '<div class="empty-state"><span class="empty-emoji">🔍</span><h3>Aucun résultat</h3><p>Essayez un autre filtre</p></div>';
+    return;
+  }
+
+  pageItems.forEach(p => {
+    const isVisited = visited.has(p.id);
+    const isFaved = favorites.has(p.id);
+    if(currentView==='grid') {
+      container.innerHTML += `
+        <div class="place-card${isVisited?' visited':''}" id="card-${p.id}">
+          <div class="card-img" onclick="openPopup(${p.id})" style="cursor:pointer">
+            <span class="card-img-emoji">${p.emoji}</span>
+            <span class="card-category-badge">${p.catLabel}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${p.name}</div>
+            <div class="card-info">
+              <div class="card-info-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>${p.address}</div>
+              <div class="card-info-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>${p.hours}</div>
+              <div class="card-info-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>${p.price}</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="card-action${isFaved?' active':''}" onclick="toggleFav(${p.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="${isFaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Favoris
+            </button>
+            <button class="card-action${isVisited?' active':''}" onclick="toggleVisited(${p.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="${isVisited?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Déjà vu
+            </button>
+            <a class="card-itinerary" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}" target="_blank">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Itinéraire
+            </a>
+          </div>
+        </div>`;
+    } else {
+      container.innerHTML += `
+        <div class="list-card${isVisited?' visited':''}" id="card-${p.id}">
+          <div class="list-card-emoji" onclick="openPopup(${p.id})" style="cursor:pointer">${p.emoji}</div>
+          <div class="list-card-body">
+            <span class="list-category-tag">${p.catLabel}</span>
+            <div class="list-card-title">${p.name}</div>
+            <div class="list-card-meta">
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>${p.address}</span>
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>${p.hours}</span>
+              <span>${p.price}</span>
+            </div>
+          </div>
+          <div class="list-card-actions">
+            <button class="list-action${isFaved?' active':''}" onclick="toggleFav(${p.id})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Favoris
+            </button>
+            <button class="list-action${isVisited?' active':''}" onclick="toggleVisited(${p.id})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${isVisited?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Déjà vu
+            </button>
+            <a class="list-action" style="text-decoration:none;color:var(--salmon)" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              GPS
+            </a>
+          </div>
+        </div>`;
+    }
+  });
+}
+
+function renderAll() {
+  const filtered = getFiltered();
+  renderCards();
+  renderPagination(filtered.length);
+  renderMap();
+}
+
+// ===== FAVORITES =====
+function toggleFav(id) {
+  if(favorites.has(id)) favorites.delete(id);
+  else favorites.add(id);
+  updateFavBadge();
+  renderAll();
+  renderFavoritesPage();
+}
+function updateFavBadge() {
+  const badge = document.getElementById('fav-badge');
+  badge.textContent = favorites.size;
+  badge.classList.toggle('visible', favorites.size > 0);
+}
+function renderFavoritesPage() {
+  const c = document.getElementById('favoritesContainer');
+  if(favorites.size===0){
+    c.innerHTML = '<div class="empty-state"><span class="empty-emoji">♥</span><h3>Aucun favori pour l\'instant</h3><p>Cliquez sur le cœur d\'un lieu pour l\'ajouter ici.</p></div>';
+    return;
+  }
+  c.innerHTML = '<div class="cards-grid">';
+  favorites.forEach(id => {
+    const p = places.find(x=>x.id===id);
+    if(!p) return;
+    c.innerHTML += `
+      <div class="place-card">
+        <div class="card-img"><span class="card-img-emoji">${p.emoji}</span><span class="card-category-badge">${p.catLabel}</span></div>
+        <div class="card-body">
+          <div class="card-title">${p.name}</div>
+          <div class="card-info">
+            <div class="card-info-row">${p.address}</div>
+            <div class="card-info-row">${p.hours}</div>
+            <div class="card-info-row">${p.price}</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="card-action active" onclick="toggleFav(${p.id})">♥ Retirer</button>
+          <a class="card-itinerary" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}" target="_blank">↗ Itinéraire</a>
+        </div>
+      </div>`;
+  });
+  c.innerHTML += '</div>';
+}
+
+// ===== VISITED =====
+function toggleVisited(id) {
+  if(visited.has(id)) visited.delete(id);
+  else visited.add(id);
+  renderAll();
+}
+
+// ===== POPUP =====
+function openPopup(id) {
+  const p = places.find(x=>x.id===id);
+  if(!p) return;
+  currentPopupId = id;
+  document.getElementById('popupCategory').textContent = p.catLabel;
+  document.getElementById('popupTitle').textContent = p.name;
+  document.getElementById('popupInfo').innerHTML = `
+    <div class="popup-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>${p.address}</span></div>
+    <div class="popup-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg><span>${p.hours}</span></div>
+    <div class="popup-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg><span>${p.price}</span></div>
+    <div class="popup-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 17.93V18h-2v1.93A8.001 8.001 0 0 1 4.07 13H6v-2H4.07A8.001 8.001 0 0 1 11 4.07V6h2V4.07A8.001 8.001 0 0 1 19.93 11H18v2h1.93A8.001 8.001 0 0 1 13 19.93z"/></svg><span>${p.website}</span></div>
+    <div class="popup-metro"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--salmon)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM6 15.5l1.5-5 2 3 2-6 2 6 2-3 1.5 5H6z"/></svg><span>${p.metro}</span></div>`;
+  const isFaved = favorites.has(id);
+  const isVisited = visited.has(id);
+  document.getElementById('popupActions').innerHTML = `
+    <button class="popup-action-btn${isFaved?' active':''}" onclick="toggleFav(${id}); refreshPopup(${id})">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Ajouter aux favoris
+    </button>
+    <button class="popup-action-btn${isVisited?' active':''}" onclick="toggleVisited(${id}); refreshPopup(${id})">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="${isVisited?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Déjà vu
+    </button>`;
+  document.getElementById('popupImg').innerHTML = `<span style="font-size:4rem">${p.emoji}</span>`;
+  document.getElementById('popupItinerary').href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.address)}`;
+  document.getElementById('popupOverlay').classList.add('open');
+}
+function refreshPopup(id){ openPopup(id); }
+function closePopup(){ document.getElementById('popupOverlay').classList.remove('open'); }
+function closePopupOutside(e){ if(e.target===document.getElementById('popupOverlay')) closePopup(); }
+
+// ===== NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const tabMap = {map:0, favorites:1, contribution:2, about:3};
+  const tabs = document.querySelectorAll('.nav-tab');
+  if(tabMap[name]!==undefined) tabs[tabMap[name]]?.classList.add('active');
+  if(name==='favorites') renderFavoritesPage();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== BURGER / PROFILE =====
+function openBurger(){ document.getElementById('burgerModal').classList.add('open'); }
+function closeBurger(){ document.getElementById('burgerModal').classList.remove('open'); }
+function closeBurgerOutside(e){ if(e.target===document.getElementById('burgerModal')) closeBurger(); }
+function toggleProfile(){ document.getElementById('profileDropdown').classList.toggle('open'); }
+function closeProfile(){ document.getElementById('profileDropdown').classList.remove('open'); }
+document.addEventListener('click', e => {
+  if(!e.target.closest('.profile-wrap')) closeProfile();
+});
+
+// ===== CONTRIBUTION =====
+function submitContrib(){
+  document.getElementById('successMsg').style.display='block';
+  setTimeout(()=>document.getElementById('successMsg').style.display='none', 5000);
+}
+
+// ===== INIT =====
+renderAll();
+</script>
+</body>
+</html>
